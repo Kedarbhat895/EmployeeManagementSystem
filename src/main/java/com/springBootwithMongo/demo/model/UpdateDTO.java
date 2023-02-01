@@ -1,19 +1,26 @@
 package com.springBootwithMongo.demo.model;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateDTO {
-    private int salary;
+
+    @Positive
+    @Min(100)
+    @Max(10000)
+    private Integer salary;
+
+    @NotBlank(message = "enter a valid designation")
     private String designation;
-
-    public UpdateDTO(int salary, String designation) {
-        this.salary = salary;
-        this.designation = designation;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public String getDesignation() {
-        return designation;
-    }
 }
+
