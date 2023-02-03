@@ -1,15 +1,16 @@
-package com.springBootwithMongo.demo.service.implementation;
+package com.springBootwithMongo.demo.service.impl;
 
 import com.springBootwithMongo.demo.model.Employee;
 //import com.springBootwithMongo.demo.model.RequestDTO;
-import com.springBootwithMongo.demo.model.UpdateDTO;
+import com.springBootwithMongo.demo.model.request.UpdateDTO;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
 import com.springBootwithMongo.demo.model.response.ResponseEmployee;
+import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
 import com.springBootwithMongo.demo.repository.EmployeeRepository;
 import com.springBootwithMongo.demo.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.springBootwithMongo.demo.utility.generalUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,14 @@ import static com.springBootwithMongo.demo.utility.generalUtility.mapDataToRespo
 import static com.springBootwithMongo.demo.utility.generalUtility.mapRequestToData;
 
 @Service
+@Slf4j
 
-public class EmployeeServiceImplementation implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private final EmployeeRepository employeeRepository;
 
-    public EmployeeServiceImplementation(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
@@ -33,14 +35,12 @@ public class EmployeeServiceImplementation implements EmployeeService {
         List<Employee> dataEmployee = employeeRepository.getAllEmployee();
         for (Employee e : dataEmployee) {
             ResponseEmployee re = new ResponseEmployee();
-            generalUtility.mapDataToResponse(re, e);
+            mapDataToResponse(re, e);
             responseEmployee.add(re);
         }
+        log.info("getAllEmployee in Service is accessed {}",responseEmployee);
         return responseEmployee;
-
-
     }
-
     @Override
     public ResponseEmployee newEmployee(CreateEmployeeRequest employee) {
         Employee employee1 = new Employee();
@@ -72,19 +72,18 @@ public class EmployeeServiceImplementation implements EmployeeService {
         return responseEmployee;
     }
 
-    public List<List> getEmployeeWithConstraints(String name, String designantion) {
 
+    public List<ResponseEmployee> getEmployeeWithConstraints(String name, String designation) {
+        List<Employee> dataEmployee = employeeRepository.getEmployeeWithNameAndDesignation(name,designation);
+        List<ResponseEmployee> responseEmployee = new ArrayList<>();
+        for (Employee e : dataEmployee) {
+            ResponseEmployee re = new ResponseEmployee();
+            mapDataToResponse(re, e);
+            responseEmployee.add(re);
+        }
+        return responseEmployee;
 
-        List<List> queryAnswer = new ArrayList<>();
-        System.out.println(employeeRepository.getEmployeeByName(name));
-        System.out.println(employeeRepository.getEmployeeByDesignation(designantion));
-
-        queryAnswer.add(employeeRepository.getEmployeeByName(name));
-        queryAnswer.add(employeeRepository.getEmployeeByDesignation(designantion));
-        return queryAnswer;
     }
-
-
     @Override
     public List<Employee> getEmployeeWithID(String id) {
         List<Employee> arr = new ArrayList<>();
@@ -93,5 +92,11 @@ public class EmployeeServiceImplementation implements EmployeeService {
 
 
     }
+    @Override
+    public List<ResponseForAggregate> getSalary(String designation) {
+        List<ResponseForAggregate> ans = employeeRepository.getTotalSalary(designation);
+        return ans;
+    }
+
 
 }

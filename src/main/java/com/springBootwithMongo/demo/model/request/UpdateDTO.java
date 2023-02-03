@@ -1,4 +1,4 @@
-package com.springBootwithMongo.demo.model;
+package com.springBootwithMongo.demo.model.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

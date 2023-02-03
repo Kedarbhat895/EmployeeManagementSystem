@@ -1,7 +1,7 @@
 package com.springBootwithMongo.demo.repository;
 
 import com.springBootwithMongo.demo.model.Employee;
-import com.springBootwithMongo.demo.model.UpdateDTO;
+import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
 
 import java.util.List;
 
@@ -22,16 +22,9 @@ public interface EmployeeRepository {
     List<Employee> getEmployeeByDesignation(String designantion);
 
 
-//    Person savePerson(Person person);
-//    List<Person> getAllPerson();
-//    List<Person> getAllPersonPaginated(
-//            int pageNumber, int pageSize);
-//    Person findOneByName(String name);
-//    List<Person> findByName(String name);
-//    List<Person> findByBirthDateAfter(Date date);
-//    List<Person> findByAgeRange(int lowerBound, int upperBound);
-//    List<Person> findByFavoriteBooks(String favoriteBook);
-//    void updateMultiplePersonAge();
-//    Person updateOnePerson(Person person);
-//    void deletePerson(Person person);
+    List<Employee> getEmployeeWithNameAndDesignation(String name,String designation);
+
+    List<ResponseForAggregate> getTotalSalary(String designation);
+
+
 }
