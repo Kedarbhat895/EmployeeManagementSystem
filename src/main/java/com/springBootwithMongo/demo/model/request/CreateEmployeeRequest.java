@@ -1,6 +1,5 @@
 package com.springBootwithMongo.demo.model.request;
 
-import com.springBootwithMongo.demo.model.Employee;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -22,5 +21,7 @@ public class CreateEmployeeRequest {
     @Min(100)
     @Positive
     private Integer employeeSalary;
-    private Employee employee;
+//    private Employee employee;
+
+
 }

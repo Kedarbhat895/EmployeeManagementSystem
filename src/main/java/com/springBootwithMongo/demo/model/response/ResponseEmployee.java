@@ -15,7 +15,7 @@ public class ResponseEmployee {
     private Integer employeeSalary;
 
     private String employeeDob;
-    private int age;
+    private int employeeAge;
 
 
 }

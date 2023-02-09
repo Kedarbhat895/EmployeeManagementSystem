@@ -1,17 +1,16 @@
 package com.springBootwithMongo.demo.model;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.aot.generate.GenerationContext;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
+@Builder
+
 
 public class Employee {
     @Id
@@ -19,7 +18,7 @@ public class Employee {
     private String employeeName;
     private String employeeDesignation;
     private String employeeDob;
-    private int age;
+    private int employeeAge;
     private int employeeSalary;
 
 

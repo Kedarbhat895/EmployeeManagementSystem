@@ -1,6 +1,7 @@
 package com.springBootwithMongo.demo.exceptionHandler;
 
 import com.springBootwithMongo.demo.exceptions.EmployeeNotFoundException;
+import com.springBootwithMongo.demo.exceptions.MongoException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-
 public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,6 +60,16 @@ public class ExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 
+    }
+
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MongoException.class)
+    public ResponseEntity<Object> handleMongoException(MongoException e){
+        Map<String,Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "MongoDB is down");
+
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 }

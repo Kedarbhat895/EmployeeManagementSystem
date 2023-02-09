@@ -1,5 +1,7 @@
 package com.springBootwithMongo.demo.controller;
 
+import com.mongodb.client.result.DeleteResult;
+import com.springBootwithMongo.demo.model.Employee;
 import com.springBootwithMongo.demo.model.request.UpdateDTO;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
 import com.springBootwithMongo.demo.model.response.ResponseEmployee;
@@ -37,44 +39,34 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee")
-    public ResponseEntity<ResponseEmployee> createEmployee(@Valid @RequestBody CreateEmployeeRequest employee) {
-        log.debug(employee.toString());
-        new ResponseEmployee();
-        ResponseEmployee responseEmployee;
-        responseEmployee = service.newEmployee(employee);
-        return ResponseEntity.status(HttpStatus.OK).body(responseEmployee);
+    public ResponseEntity<ResponseEmployee> createEmployee(@Valid @RequestBody CreateEmployeeRequest createEmployeeRequest){
+        log.debug(createEmployeeRequest.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(service.newEmployee(createEmployeeRequest));
     }
 
     @GetMapping("/find")
     public ResponseEntity<List<List>> getEmployeeBased(@RequestParam("name") @NotBlank(message = "name should be mentioned") String name,
                                                        @RequestParam("designation") @NotBlank(message = "designation should be mentioned") String designation) {
-
         List<List> answer = new ArrayList<>();
         answer.add(service.getEmployeeWithConstraints(name, designation));
 
         return ResponseEntity.status(HttpStatus.OK).body(answer);
-
-
     }
+
     @DeleteMapping(value = "delete/{id}")
-    public ResponseEntity<ResponseEmployee> deleteEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id) {
-        ResponseEmployee responseEmployee;
-        responseEmployee = service.deleteEmployee(id);
-        return ResponseEntity.status(HttpStatus.OK).body(responseEmployee);
+    public ResponseEntity<DeleteResult> deleteEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.deleteEmployee(id));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseEmployee> updateEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id, @Valid @RequestBody UpdateDTO update) {
-        ResponseEmployee responseEmployee;
-        responseEmployee = service.updateEmployee(id, update);
-        return ResponseEntity.status(HttpStatus.OK).body(responseEmployee);
+        return ResponseEntity.status(HttpStatus.OK).body(service.updateEmployee(id, update));
 
     }
 
     @GetMapping("/salary")
     public ResponseEntity<List<ResponseForAggregate>> getSalary(@NotBlank(message = "Please enter designation") @RequestParam(value = "designation") String designation){
-       List<ResponseForAggregate> ans = service.getSalary(designation);
-        return ResponseEntity.status(HttpStatus.OK).body(ans);
+        return ResponseEntity.status(HttpStatus.OK).body(service.getSalary(designation));
     }
 
 }

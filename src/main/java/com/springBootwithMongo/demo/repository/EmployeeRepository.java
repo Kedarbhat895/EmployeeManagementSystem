@@ -1,5 +1,6 @@
 package com.springBootwithMongo.demo.repository;
 
+import com.mongodb.client.result.DeleteResult;
 import com.springBootwithMongo.demo.model.Employee;
 import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
 
@@ -8,13 +9,13 @@ import java.util.List;
 
 public interface EmployeeRepository {
 
-    void saveEmployee(Employee employee);
+    Employee saveEmployee(Employee employee);
     List<Employee> getAllEmployee();
 
 
-    void updateEmployee(Employee employee);
+    Employee updateEmployee(Employee employee);
 
-    void deleteEmployee(Employee employee);
+    DeleteResult deleteEmployee(Employee employee);
 
     Employee getEmployeeByID(String id);
 

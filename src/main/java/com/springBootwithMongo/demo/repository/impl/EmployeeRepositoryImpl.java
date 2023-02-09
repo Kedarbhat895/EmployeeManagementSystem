@@ -1,11 +1,13 @@
 package com.springBootwithMongo.demo.repository.impl;
 
+import com.mongodb.client.result.DeleteResult;
 import com.springBootwithMongo.demo.exceptions.EmployeeNotFoundException;
 import com.springBootwithMongo.demo.exceptions.MongoException;
 import com.springBootwithMongo.demo.model.Employee;
 import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
 import com.springBootwithMongo.demo.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,16 +23,19 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Repository
 @Slf4j
 
-public class EmployeeImplementation implements EmployeeRepository {
+public class EmployeeRepositoryImpl implements EmployeeRepository {
     private final MongoTemplate mongoTemplate;
-    public EmployeeImplementation(MongoTemplate mongoTemplate) {
+
+    @Autowired
+    public EmployeeRepositoryImpl(MongoTemplate mongoTemplate) {
 
         this.mongoTemplate = mongoTemplate;
     }
     @Override
-    public void saveEmployee(Employee employee) {
+    public Employee saveEmployee(Employee employee) {
         try {
-            mongoTemplate.save(employee);
+            Employee e = mongoTemplate.save(employee);
+            return e;
         } catch (MongoException e){
             log.error("MongoDB Error", HttpStatus.INTERNAL_SERVER_ERROR);
             throw new MongoException();
@@ -46,18 +51,21 @@ public class EmployeeImplementation implements EmployeeRepository {
         }
     }
     @Override
-    public void updateEmployee(Employee employee){
+    public Employee updateEmployee(Employee employee){
         try {
-            mongoTemplate.save(employee);
+            Employee e= mongoTemplate.save(employee);
+            return e;
         } catch (MongoException e){
             log.error("MongoDB Error", HttpStatus.INTERNAL_SERVER_ERROR);
             throw new MongoException();
         }
     }
     @Override
-    public void deleteEmployee(Employee employee) {
+    public DeleteResult deleteEmployee(Employee employee) {
         try {
-            mongoTemplate.remove(employee);
+            DeleteResult e = mongoTemplate.remove(employee);
+            System.out.println("Delete Result is --------->"+e);
+            return e;
         } catch (MongoException e){
             log.error("MongoDB Error", HttpStatus.INTERNAL_SERVER_ERROR);
             throw new MongoException();

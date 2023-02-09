@@ -1,13 +1,14 @@
 package com.springBootwithMongo.demo.service.impl;
 
+import com.mongodb.client.result.DeleteResult;
 import com.springBootwithMongo.demo.model.Employee;
-//import com.springBootwithMongo.demo.model.RequestDTO;
 import com.springBootwithMongo.demo.model.request.UpdateDTO;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
 import com.springBootwithMongo.demo.model.response.ResponseEmployee;
 import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
 import com.springBootwithMongo.demo.repository.EmployeeRepository;
 import com.springBootwithMongo.demo.service.EmployeeService;
+import com.springBootwithMongo.demo.utility.UtilityForMapping;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.springBootwithMongo.demo.utility.generalUtility.mapDataToResponse;
-import static com.springBootwithMongo.demo.utility.generalUtility.mapRequestToData;
 
 @Service
 @Slf4j
@@ -25,7 +24,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private final EmployeeRepository employeeRepository;
-
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
@@ -34,41 +32,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<ResponseEmployee> responseEmployee = new ArrayList<>();
         List<Employee> dataEmployee = employeeRepository.getAllEmployee();
         for (Employee e : dataEmployee) {
-            ResponseEmployee re = new ResponseEmployee();
-            mapDataToResponse(re, e);
+            ResponseEmployee re = UtilityForMapping.employeeResponse(e);
             responseEmployee.add(re);
         }
         log.info("getAllEmployee in Service is accessed {}",responseEmployee);
         return responseEmployee;
     }
     @Override
-    public ResponseEmployee newEmployee(CreateEmployeeRequest employee) {
-        Employee employee1 = new Employee();
-        ResponseEmployee responseEmployee = new ResponseEmployee();
-        mapRequestToData(employee, employee1);
-        mapDataToResponse(responseEmployee, employee1);
-        employeeRepository.saveEmployee(employee1);
-
+    public ResponseEmployee newEmployee(CreateEmployeeRequest createEmployeeRequest) {
+        Employee employee = UtilityForMapping.employeeData(createEmployeeRequest); //Todo
+        Employee savedEmployee = employeeRepository.saveEmployee(employee);
+        ResponseEmployee responseEmployee = UtilityForMapping.employeeResponse(savedEmployee);
         return responseEmployee;
     }
 
     @Override
-    public ResponseEmployee deleteEmployee(String id) {
-        ResponseEmployee responseEmployee = new ResponseEmployee();
+    public DeleteResult deleteEmployee(String id) {
         Employee employee = employeeRepository.getEmployeeByID(id);
-        mapDataToResponse(responseEmployee, employee);
-        employeeRepository.deleteEmployee(employee);
-        return responseEmployee;
+        DeleteResult e = employeeRepository.deleteEmployee(employee);
+        return e;
     }
 
     @Override
     public ResponseEmployee updateEmployee(String id, UpdateDTO update) {
         Employee employee = employeeRepository.getEmployeeByID(id);
-        ResponseEmployee responseEmployee = new ResponseEmployee();
         employee.setEmployeeDesignation(update.getDesignation());
         employee.setEmployeeSalary(update.getSalary());
-        employeeRepository.updateEmployee(employee);
-        mapDataToResponse(responseEmployee, employee);
+        Employee savedEmployee = employeeRepository.updateEmployee(employee);
+        ResponseEmployee responseEmployee = UtilityForMapping.employeeResponse(savedEmployee);
         return responseEmployee;
     }
 
@@ -76,19 +67,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<ResponseEmployee> getEmployeeWithConstraints(String name, String designation) {
         List<Employee> dataEmployee = employeeRepository.getEmployeeWithNameAndDesignation(name,designation);
         List<ResponseEmployee> responseEmployee = new ArrayList<>();
-        for (Employee e : dataEmployee) {
-            ResponseEmployee re = new ResponseEmployee();
-            mapDataToResponse(re, e);
+        for (Employee employee : dataEmployee) {
+            ResponseEmployee re = UtilityForMapping.employeeResponse(employee);
             responseEmployee.add(re);
         }
         return responseEmployee;
 
     }
     @Override
-    public List<Employee> getEmployeeWithID(String id) {
-        List<Employee> arr = new ArrayList<>();
-        arr.add(employeeRepository.getEmployeeByID(id));
-        return arr;
+    public ResponseEmployee getEmployeeWithID(String id) {
+        Employee dataEmployee = employeeRepository.getEmployeeByID(id);
+        ResponseEmployee responseEmployee = UtilityForMapping.employeeResponse(dataEmployee);
+
+        return responseEmployee;
 
 
     }
