@@ -1,26 +1,25 @@
 package com.springBootwithMongo.demo.service;
 
 import com.mongodb.client.result.DeleteResult;
-import com.springBootwithMongo.demo.model.Employee;
-import com.springBootwithMongo.demo.model.request.UpdateDTO;
+import com.springBootwithMongo.demo.model.request.UpdateEmployeeRequest;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
-import com.springBootwithMongo.demo.model.response.ResponseEmployee;
-import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
+import com.springBootwithMongo.demo.model.response.EmployeeResponse;
+import com.springBootwithMongo.demo.model.response.SalaryResponse;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    List<ResponseEmployee> getAllEmployee();
-    ResponseEmployee newEmployee(CreateEmployeeRequest employee);
+    List<EmployeeResponse> getAllEmployee();
+    EmployeeResponse newEmployee(CreateEmployeeRequest employee);
 
     DeleteResult deleteEmployee(String id);
 
-    ResponseEmployee updateEmployee(String id, UpdateDTO update);
+    EmployeeResponse updateEmployee(String id, UpdateEmployeeRequest update);
 
-    List<ResponseEmployee> getEmployeeWithConstraints(String name,String designation);
+    List<EmployeeResponse> getEmployeeWithConstraints(String name, String designation);
 
-    ResponseEmployee getEmployeeWithID(String id);
+    EmployeeResponse getEmployeeWithID(String id);
 
-    List<ResponseForAggregate> getSalary(String designation);
+    List<SalaryResponse> getSalary(String designation);
 }

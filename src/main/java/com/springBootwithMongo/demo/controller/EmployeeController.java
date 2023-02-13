@@ -1,11 +1,12 @@
 package com.springBootwithMongo.demo.controller;
 
 import com.mongodb.client.result.DeleteResult;
-import com.springBootwithMongo.demo.model.Employee;
-import com.springBootwithMongo.demo.model.request.UpdateDTO;
+//import com.springBootwithMongo.demo.KafkaProducer;
+import com.springBootwithMongo.demo.KafkaProducer;
+import com.springBootwithMongo.demo.model.request.UpdateEmployeeRequest;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
-import com.springBootwithMongo.demo.model.response.ResponseEmployee;
-import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
+import com.springBootwithMongo.demo.model.response.EmployeeResponse;
+import com.springBootwithMongo.demo.model.response.SalaryResponse;
 import com.springBootwithMongo.demo.service.EmployeeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -15,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,49 +23,57 @@ import java.util.List;
 @Slf4j
 
 public class EmployeeController {
-
+    private final EmployeeService employeeService;
 
     @Autowired
-    private final EmployeeService service;
     public EmployeeController(EmployeeService service) {
-        this.service = service;
+        this.employeeService = service;
     }
 
-    @GetMapping("/employee")
-    public ResponseEntity<List<ResponseEmployee>> getEmployees() {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getAllEmployee());
+    @GetMapping("/getallemployee") //todo - naming
+    public ResponseEntity<List<EmployeeResponse>> getAllEmployee() {
+        log.debug("Received a request to get all employees");
+        List<EmployeeResponse> employeeResponse = employeeService.getAllEmployee();
+        log.debug("Response sent {}",employeeResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeResponse);
 
     }
 
-    @PostMapping("/employee")
-    public ResponseEntity<ResponseEmployee> createEmployee(@Valid @RequestBody CreateEmployeeRequest createEmployeeRequest){
-        log.debug(createEmployeeRequest.toString());
-        return ResponseEntity.status(HttpStatus.OK).body(service.newEmployee(createEmployeeRequest));
+    @PostMapping("/createemployee")
+    public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody CreateEmployeeRequest createEmployeeRequest){
+        log.debug("Received a request to create a employee {}",createEmployeeRequest);
+        EmployeeResponse employeeResponse=employeeService.newEmployee(createEmployeeRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeResponse);
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<List<List>> getEmployeeBased(@RequestParam("name") @NotBlank(message = "name should be mentioned") String name,
+    @GetMapping("/find") //todo Change list(list) to responseEmployee
+    public ResponseEntity<List<EmployeeResponse>> getEmployeeBased(@RequestParam("name") @NotBlank(message = "name should be mentioned") String name,
                                                        @RequestParam("designation") @NotBlank(message = "designation should be mentioned") String designation) {
-        List<List> answer = new ArrayList<>();
-        answer.add(service.getEmployeeWithConstraints(name, designation));
-
-        return ResponseEntity.status(HttpStatus.OK).body(answer);
+        List<EmployeeResponse> response = employeeService.getEmployeeWithConstraints(name, designation);
+        log.debug("Received a request to find employee with {} and {}",name,designation);
+        log.debug("Response sent {}",response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping(value = "delete/{id}")
-    public ResponseEntity<DeleteResult> deleteEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.deleteEmployee(id));
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id) {
+        log.debug("Received a request to delete employee with id {}",id);
+        DeleteResult result = employeeService.deleteEmployee(id);
+        return ResponseEntity.status(HttpStatus.OK).body("deleted");
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseEmployee> updateEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id, @Valid @RequestBody UpdateDTO update) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.updateEmployee(id, update));
-
+    public ResponseEntity<EmployeeResponse> updateEmployee(@PathVariable @NotBlank(message = "enter a valid id") String id, @Valid @RequestBody UpdateEmployeeRequest updateEmployeeRequest) {
+        log.debug("Received a request to update employee for id {} and update request is {} ",id,updateEmployeeRequest);
+        EmployeeResponse employeeResponse = employeeService.updateEmployee(id, updateEmployeeRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeResponse);
     }
 
     @GetMapping("/salary")
-    public ResponseEntity<List<ResponseForAggregate>> getSalary(@NotBlank(message = "Please enter designation") @RequestParam(value = "designation") String designation){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getSalary(designation));
+    public ResponseEntity<List<SalaryResponse>> getSalary(@NotBlank(message = "Please enter designation") @RequestParam(value = "designation") String designation){
+        log.debug("Received a request to get total salary of {} designation",designation);
+        List<SalaryResponse> salaryResponse = employeeService.getSalary(designation);
+        return ResponseEntity.status(HttpStatus.OK).body(salaryResponse);
     }
 
 }

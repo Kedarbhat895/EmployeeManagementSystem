@@ -9,19 +9,17 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateEmployeeRequest {
-    private String employeeId;
-    @NotBlank(message = "Cannot be blank")
+    private String employeeId;//todo add notblank
+    @NotBlank(message = "Cannot be blank for name")
     private String employeeName;
     @NotBlank(message = "Cannot be blank")
     private String employeeDesignation;
     @Pattern(regexp = "(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$", message = "enter in dd/mm/yyyy pattern")
     private String employeeDob;
-//    @NotBlank(message="Please enter Salary")
-    @Max(100000)
-    @Min(100)
+    @DecimalMax("100000.00")
+    @DecimalMin("100")
     @Positive
-    private Integer employeeSalary;
-//    private Employee employee;
+    private Double employeeSalary;
 
 
 }

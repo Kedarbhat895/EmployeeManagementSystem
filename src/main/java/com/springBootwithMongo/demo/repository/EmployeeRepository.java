@@ -1,8 +1,8 @@
 package com.springBootwithMongo.demo.repository;
 
 import com.mongodb.client.result.DeleteResult;
-import com.springBootwithMongo.demo.model.Employee;
-import com.springBootwithMongo.demo.model.response.ResponseForAggregate;
+import com.springBootwithMongo.demo.model.entity.Employee;
+import com.springBootwithMongo.demo.model.response.SalaryResponse;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public interface EmployeeRepository {
 
     List<Employee> getEmployeeWithNameAndDesignation(String name,String designation);
 
-    List<ResponseForAggregate> getTotalSalary(String designation);
+    List<SalaryResponse> getTotalSalary(String designation);
 
 
 }

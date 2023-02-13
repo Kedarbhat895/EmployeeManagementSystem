@@ -1,8 +1,9 @@
 package com.springBootwithMongo.demo.utility;
 
-import com.springBootwithMongo.demo.model.Employee;
+import com.springBootwithMongo.demo.model.entity.Employee;
 import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
-import com.springBootwithMongo.demo.model.response.ResponseEmployee;
+import com.springBootwithMongo.demo.model.request.UpdateEmployeeRequest;
+import com.springBootwithMongo.demo.model.response.EmployeeResponse;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -21,17 +22,26 @@ public class UtilityForMapping {
         return age;
     }
 
-    public static ResponseEmployee employeeResponse(Employee employee) {
-        return ResponseEmployee.builder().employeeName(employee.getEmployeeName()).employeeId(employee.getEmployeeID())
+    public static EmployeeResponse employeeResponse(Employee employee) {
+        return EmployeeResponse.builder().employeeName(employee.getEmployeeName()).employeeId(employee.getEmployeeID())
                 .employeeDob(employee.getEmployeeDob()).employeeSalary(employee.getEmployeeSalary()).employeeDesignation(employee.getEmployeeDesignation()).employeeAge(employee.getEmployeeAge()).build();
 
     }
 
     public static Employee employeeData(CreateEmployeeRequest createEmployeeRequest) {
-
         return Employee.builder().employeeID(createEmployeeRequest.getEmployeeId()).employeeName(createEmployeeRequest.getEmployeeName())
                         .employeeAge(getAge(createEmployeeRequest.getEmployeeDob())).employeeDesignation(createEmployeeRequest.getEmployeeDesignation())
                         .employeeSalary(createEmployeeRequest.getEmployeeSalary()).employeeDob(createEmployeeRequest.getEmployeeDob()).build();
 
     }
+
+    public static void updateEmployee(UpdateEmployeeRequest updateEmployeeRequest,Employee employee) {
+        employee.setEmployeeAge(updateEmployeeRequest.getEmployeeAge());
+        employee.setEmployeeSalary(updateEmployeeRequest.getEmployeeSalary());
+        employee.setEmployeeDesignation(updateEmployeeRequest.getEmployeeDesignation());
+        employee.setEmployeeName(updateEmployeeRequest.getEmployeeName());
+    }
+
+
+
 }

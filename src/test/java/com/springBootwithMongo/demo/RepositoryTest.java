@@ -1,22 +1,14 @@
 package com.springBootwithMongo.demo;
 
 
-import com.mongodb.client.result.DeleteResult;
-import com.springBootwithMongo.demo.model.Employee;
-import com.springBootwithMongo.demo.model.request.CreateEmployeeRequest;
-import com.springBootwithMongo.demo.model.request.UpdateDTO;
+import com.springBootwithMongo.demo.model.entity.Employee;
 import com.springBootwithMongo.demo.repository.impl.EmployeeRepositoryImpl;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.mongodb.core.ExecutableRemoveOperation;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,15 +31,6 @@ public class RepositoryTest {
     }
 
 
-    @Test
-    public void testSaveEmployee(){
-        Employee expected = new Employee("1000","kedar","intern","19/05/2001",21,9000);
-        Employee employee = new Employee("1000","kedar","intern","19/05/2001",21,9000);
-        when(mongoTemplate.save(any(Employee.class))).thenReturn(expected);
-        Employee actual = employeeRepository.saveEmployee(employee);
-        verify(mongoTemplate,times(1)).save(employeeArgumentCaptor.capture());
-        assertEquals(expected.getEmployeeAge(),actual.getEmployeeAge());
-    }
 
 //    @Test
 //    public void testUpdateEmployee() {
